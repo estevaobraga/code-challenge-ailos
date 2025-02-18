@@ -13,11 +13,14 @@ public class AccountRepository: IAccountRepository
     public async Task AddAccount(BankAccount account)
     {
         _accounts[account.AccountNumber] = account;
+        await Task.CompletedTask;
     }
 
     public async Task<BankAccount> GetAccount(int accountNumber)
     {
-        if (_accounts.TryGetValue(accountNumber, out var account))
+        var accountExist = await Task.FromResult(_accounts.TryGetValue(accountNumber, out var account));
+
+        if (accountExist)
             return account;
 
         throw new KeyNotFoundException("Account not found.");
@@ -25,7 +28,9 @@ public class AccountRepository: IAccountRepository
 
     public async Task UpdateAccount(BankAccount account)
     {
-        if (!_accounts.ContainsKey(account.AccountNumber))
+        var accountExist = await Task.FromResult(_accounts.ContainsKey(account.AccountNumber));
+
+        if (!accountExist)
             throw new KeyNotFoundException("Account not found.");
 
         _accounts[account.AccountNumber] = account;

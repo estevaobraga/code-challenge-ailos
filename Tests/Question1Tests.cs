@@ -22,16 +22,16 @@ public class Question1Tests
     {
         // Arrange
         int accountNumber = 1234;
-        string accountHolder = "John Doe";
+        string holderName = "John Doe";
         double initialDeposit = 100.00;
 
         // Act
-        await _accountService.CreateAccount(accountNumber, accountHolder, initialDeposit);
+        await _accountService.CreateAccount(accountNumber, holderName, initialDeposit);
 
         // Assert
         _mockRepo.Verify(repo => repo.AddAccount(It.Is<BankAccount>(account =>
             account.AccountNumber == accountNumber &&
-            account.HolderName == accountHolder &&
+            account.HolderName == holderName &&
             account.Balance == initialDeposit
         )), Times.Once);
     }
@@ -41,15 +41,15 @@ public class Question1Tests
     {
         // Arrange
         int accountNumber = 1234;
-        string accountHolder = "John Doe";
+        string holderName = "John Doe";
 
         // Act
-        await _accountService.CreateAccount(accountNumber, accountHolder);
+        await _accountService.CreateAccount(accountNumber, holderName);
 
         // Assert
         _mockRepo.Verify(repo => repo.AddAccount(It.Is<BankAccount>(account =>
             account.AccountNumber == accountNumber &&
-            account.HolderName == accountHolder &&
+            account.HolderName == holderName &&
             account.Balance == 0
         )), Times.Once);
     }
@@ -80,6 +80,11 @@ public class Question1Tests
         // Arrange
         int accountNumber = 1234;
         double invalidDepositAmount = -50.00;
+        string holderName = "John Doe";
+        double initialBalance = 100.00;
+
+        var account = new BankAccount(accountNumber, holderName, initialBalance);
+        _mockRepo.Setup(repo => repo.GetAccount(accountNumber)).ReturnsAsync(account);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -93,11 +98,11 @@ public class Question1Tests
     {
         // Arrange
         int accountNumber = 1234;
-        string accountHolder = "John Doe";
+        string holderName = "John Doe";
         double initialBalance = 100.00;
         double withdrawalAmount = 50.00;
 
-        var account = new BankAccount(accountNumber, accountHolder, initialBalance);
+        var account = new BankAccount(accountNumber, holderName, initialBalance);
         _mockRepo.Setup(repo => repo.GetAccount(accountNumber)).ReturnsAsync(account);
 
         // Act
@@ -113,7 +118,12 @@ public class Question1Tests
     {
         // Arrange
         int accountNumber = 1234;
+        string holderName = "John Doe";
+        double initialBalance = 100.00;
         double invalidWithdrawalAmount = -50.00;
+
+        var account = new BankAccount(accountNumber, holderName, initialBalance);
+        _mockRepo.Setup(repo => repo.GetAccount(accountNumber)).ReturnsAsync(account);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() =>
@@ -127,11 +137,11 @@ public class Question1Tests
     {
         // Arrange
         int accountNumber = 1234;
-        string accountHolder = "John Doe";
+        string holderName = "John Doe";
         double initialBalance = 50.00;
         double withdrawalAmount = 60.00;
 
-        var account = new BankAccount(accountNumber, accountHolder, initialBalance);
+        var account = new BankAccount(accountNumber, holderName, initialBalance);
         _mockRepo.Setup(repo => repo.GetAccount(accountNumber)).ReturnsAsync(account);
 
         // Act
@@ -148,10 +158,10 @@ public class Question1Tests
     {
         // Arrange
         int accountNumber = 1234;
-        string accountHolder = "John Doe";
+        string holderName = "John Doe";
         double initialBalance = 100.00;
 
-        var account = new BankAccount(accountNumber, accountHolder, initialBalance);
+        var account = new BankAccount(accountNumber, holderName, initialBalance);
         _mockRepo.Setup(repo => repo.GetAccount(accountNumber)).ReturnsAsync(account);
 
         // Act
